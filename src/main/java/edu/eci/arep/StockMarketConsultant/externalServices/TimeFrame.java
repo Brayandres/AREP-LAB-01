@@ -2,12 +2,12 @@ package edu.eci.arep.StockMarketConsultant.externalServices;
 
 public enum TimeFrame {
 
-    INTRA_DAY("intraday"),
-    DIARY("diary"),
-    WEEKLY("weekly"),
-    MONTHLY("monthly");
+    INTRA_DAY("TIME_SERIES_INTRADAY"),
+    DAILY("TIME_SERIES_DAILY"),
+    WEEKLY("TIME_SERIES_WEEKLY"),
+    MONTHLY("TIME_SERIES_MONTHLY");
 
-    public final String label;
+    private final String label;
 
     private TimeFrame(String label) {
         this.label = label;
