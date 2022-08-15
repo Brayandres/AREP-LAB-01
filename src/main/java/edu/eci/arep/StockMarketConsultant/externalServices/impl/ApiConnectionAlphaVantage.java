@@ -26,8 +26,8 @@ public class ApiConnectionAlphaVantage implements ApiConnection {
         var function = timeFrame.getValue();
         var interval = timeInterval.getValue();
         var uri = (timeFrame != TimeFrame.INTRA_DAY) ?
-                "query?function=" + function + "&symbol=" + stockName + "&apikey=" + API_KEY:
-                "query?function=" + function + "&symbol=" + stockName + "&interval=" + interval + "&apikey=" + API_KEY;
+                "query?function=" + function + "&symbol=" + stockName + "&datatype=json" + "&apikey=" + API_KEY:
+                "query?function=" + function + "&symbol=" + stockName + "&interval=" + interval + "&datatype=json" + "&apikey=" + API_KEY;
 
         // Creating request
         URL url = new URL(HOST + uri);

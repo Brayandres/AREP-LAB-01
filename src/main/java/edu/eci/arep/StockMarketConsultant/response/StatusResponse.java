@@ -7,7 +7,7 @@ public enum StatusResponse {
 
     private final String status;
 
-    StatusResponse(String status) {
+    private StatusResponse(String status) {
         this.status = status;
     }
 

@@ -6,6 +6,7 @@ public class StandardResponse {
     private StatusResponse status;
     private String message;
     private JsonElement data;
+    private int code;
 
     public StandardResponse(StatusResponse status) {
         this.status = status;
@@ -19,6 +20,12 @@ public class StandardResponse {
     public StandardResponse(StatusResponse status, JsonElement data) {
         this.status = status;
         this.data = data;
+    }
+
+    public StandardResponse(StatusResponse status, int code, String message) {
+        this.status = status;
+        this.code = code;
+        this.message = message;
     }
 
     public StatusResponse getStatus() {
@@ -43,5 +50,13 @@ public class StandardResponse {
 
     public void setData(JsonElement data) {
         this.data = data;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 }
