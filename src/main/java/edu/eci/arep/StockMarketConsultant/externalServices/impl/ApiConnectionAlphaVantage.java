@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class ApiConnectionAlphaVantage implements ApiConnection {
@@ -22,7 +21,7 @@ public class ApiConnectionAlphaVantage implements ApiConnection {
     }
 
     @Override
-    public String getStockValuationHistory(String stockName, TimeFrame timeFrame, TimeInterval timeInterval) throws MalformedURLException, IOException {
+    public String getStockValuationHistory(String stockName, TimeFrame timeFrame, TimeInterval timeInterval) throws IOException {
         var function = timeFrame.getValue();
         var interval = timeInterval.getValue();
         var uri = (timeFrame != TimeFrame.INTRA_DAY) ?
