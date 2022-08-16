@@ -13,6 +13,8 @@ import spark.Request;
 import spark.Response;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static spark.Spark.*;
 
@@ -25,6 +27,8 @@ public class SparkWebServer {
         staticFileLocation("/static");
         port(getPort());
         get("/checkStocks", SparkWebServer::getStockValuationHistory);
+        get("/getTimeframes", SparkWebServer::getTimeframeValues);
+        get("/getTimeIntervals", SparkWebServer::getTimeIntervalValues);
     }
 
     private static int getPort() {
@@ -56,5 +60,27 @@ public class SparkWebServer {
             response.status(statusCode);
             return new Gson().toJson(new StandardResponse(StatusResponse.ERROR, statusCode, e.getMessage()));
         }
+    }
+
+    private static String getTimeframeValues(Request request, Response response) {
+        response.type("application/json");
+        ArrayList<String> values = new ArrayList<>();
+        Arrays.asList(TimeFrame.values()).forEach((TimeFrame timeFrame) ->
+                values.add(timeFrame.toString())
+        );
+        String data = new Gson().toJson(values);
+        response.status(HttpStatus.OK_200);
+        return data;
+    }
+
+    private static String getTimeIntervalValues(Request request, Response response) {
+        response.type("application/json");
+        ArrayList<String> values = new ArrayList<>();
+        Arrays.asList(TimeInterval.values()).forEach((TimeInterval timeInterval) ->
+                values.add(timeInterval.toString())
+        );
+        String data = new Gson().toJson(values);
+        response.status(HttpStatus.OK_200);
+        return data;
     }
 }
