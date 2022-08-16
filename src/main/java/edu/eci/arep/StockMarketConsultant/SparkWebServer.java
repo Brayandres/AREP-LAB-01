@@ -48,7 +48,7 @@ public class SparkWebServer {
         } catch (IllegalArgumentException e) {
             var statusCode = HttpStatus.BAD_REQUEST_400;
             response.status(statusCode);
-            return new Gson().toJson(new StandardResponse(StatusResponse.ERROR, statusCode, "Some parameter name is invalid"));
+            return new Gson().toJson(new StandardResponse(StatusResponse.ERROR, statusCode, "Some parameter value is invalid"));
         } catch (Exception e) {
             var statusCode = HttpStatus.CONFLICT_409;
             response.status(statusCode);
