@@ -46,8 +46,8 @@ public final class CacheMemory {
     private void storeData(String dataIdentifier, ApiConnection externalApi) throws IOException {
         String[] requestParams = dataIdentifier.split("/");
         String stockName = requestParams[0];
-        TimeFrame timeFrame = TimeFrame.valueOf(requestParams[0]);
-        TimeInterval timeInterval = TimeInterval.valueOf(requestParams[0]);
+        TimeFrame timeFrame = TimeFrame.valueOf(requestParams[1]);
+        TimeInterval timeInterval = TimeInterval.valueOf(requestParams[2]);
         String requestResponse = externalApi.getStockValuationHistory(stockName, timeFrame, timeInterval);
         memory.put(dataIdentifier, requestResponse);
     }

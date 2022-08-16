@@ -1,6 +1,7 @@
 package edu.eci.arep.StockMarketConsultant;
 
 import com.google.gson.Gson;
+import edu.eci.arep.StockMarketConsultant.cache.CacheMemory;
 import edu.eci.arep.StockMarketConsultant.externalServices.ApiConnection;
 import edu.eci.arep.StockMarketConsultant.externalServices.TimeFrame;
 import edu.eci.arep.StockMarketConsultant.externalServices.TimeInterval;
@@ -17,7 +18,8 @@ import static spark.Spark.*;
 
 public class SparkWebServer {
 
-    private static final ApiConnection service = new ApiConnectionAlphaVantage();
+    private static final ApiConnection externalApiService = new ApiConnectionAlphaVantage();
+    private static final CacheMemory cacheService = CacheMemory.getInstance();
 
     public static void main(String[] args) {
         staticFileLocation("/static");
@@ -38,13 +40,13 @@ public class SparkWebServer {
             String stockName = request.queryParams("symbol");
             TimeFrame timeFrame = TimeFrame.valueOf(request.queryParams("function"));
             TimeInterval timeInterval = TimeInterval.valueOf(request.queryParams("interval"));
-            System.out.println("\nGet Body: {symbol="+stockName+", function="+timeFrame+", interval="+timeInterval+"}");
+            String returnedData = cacheService.getRequestData(externalApiService, stockName + "/" + timeFrame + "/" + timeInterval);
             response.status(HttpStatus.OK_200);
-            return service.getStockValuationHistory(stockName, timeFrame, timeInterval);
+            return returnedData;
         } catch (IOException e) {
             var statusCode = HttpStatus.INTERNAL_SERVER_ERROR_500;
             response.status(statusCode);
-            return new Gson().toJson(new StandardResponse(StatusResponse.ERROR, statusCode, "Service temporarily unavailable"));
+            return new Gson().toJson(new StandardResponse(StatusResponse.ERROR, statusCode, "INTERNAL_SERVER_ERROR"));
         } catch (IllegalArgumentException e) {
             var statusCode = HttpStatus.BAD_REQUEST_400;
             response.status(statusCode);
