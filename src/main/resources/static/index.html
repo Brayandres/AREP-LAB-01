@@ -11,8 +11,35 @@
 	<title>ECI Services | Stock Market</title>
 </head>
 
-<body onload="ApiClient.init()">
-	ECI Services<br/>
-	Stock Market Consultant
+<body>
+	<p class="titleText" id="header" style="font-size: 2rem;">
+		STOCK MARKET CONSULTANT<br>
+	</p>
+	<p class="titleText" style="font-size: 1.2rem;">
+		The following service allows you to check the current status of the stock market based on the parameters you configure to obtain information.<br>
+	</p>
+	<p class="titleText" style="font-size: 1.1rem;">
+		Configure your query values<br>
+		<select name="select">
+			<option hidden selected>Select a timeframe</option>
+			<option value="value1">Value 1</option>
+			<option value="value2">Value 2</option>
+			<option value="value3">Value 3</option>
+		</select>
+	</p>
+
+
+
+
+
+	<p class="titleText" style="font-size: 1.5rem;">
+		Password*<br>
+		<input id="passwordField" type="Password" placeholder="**********"><br>
+		<button id="sendBtn" onclick="registerApi.registerNewUser()">REGISTER</button>
+	</p>
+	<p class="titleText" style="font-size: 1rem;">
+		Already registered?
+		<a href="login.html" style="color: red;"><b>LOGIN</b></a>
+	</p>
 </body>
 </html>
