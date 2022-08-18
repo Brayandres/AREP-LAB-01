@@ -1,4 +1,4 @@
 package edu.eci.arep.StockMarketConsultant;
 
-public class SparkWebServer {
+public class SparkWebServerTest {
 }
