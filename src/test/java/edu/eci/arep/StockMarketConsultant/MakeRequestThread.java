@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class MakeRequestThread implements Runnable {
@@ -12,37 +14,48 @@ public class MakeRequestThread implements Runnable {
     private static final ConcurrentHashMap<String, Boolean> resultsOfThreadRequests = new ConcurrentHashMap<>();
 
     private final Object mutex = new Object();
+    private final List<String[]> requestsParams;
     private final Thread ownThread;
     private boolean isPaused;
-    private final String PATH;
+    private final String HOST;
 
-    public MakeRequestThread(String path) {
+    public MakeRequestThread(String host, ArrayList<String[]> requestsParams) {
         isPaused = false;
-        this.PATH = path;
+        this.HOST = host;
+        this.requestsParams = requestsParams;
         ownThread = new Thread(this);
     }
 
     @Override
     public void run() {
-        synchronized (mutex) {
-            while(isPaused) {
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        for (int i = 0; i < requestsParams.size(); i++) {
+            synchronized (mutex) {
+                while (isPaused) {
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
-        try {
-            makeRequest();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            boolean wasProcessed;
+            String[] paramsSet = requestsParams.get(i);
+            try {
+                makeRequest(paramsSet[0], paramsSet[1], paramsSet[2]);
+                wasProcessed = true;
+            } catch (Exception e) {
+                wasProcessed = false;
+                e.printStackTrace();
+            }
+            resultsOfThreadRequests.put(ownThread.getName() +": case="+i+", params="+paramsSet[0]+"-"+paramsSet[1]+"-"+paramsSet[2], wasProcessed);
         }
     }
 
-    private void makeRequest() throws IOException {
+    private void makeRequest(String function, String symbol, String interval) throws IOException {
+        // Setting uri
+        var uri = "?function=" + function + "&symbol=" + symbol + "&interval=" + interval;
         // Creating request
-        URL url = new URL(PATH);
+        URL url = new URL(HOST + uri);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         // Setting request properties
