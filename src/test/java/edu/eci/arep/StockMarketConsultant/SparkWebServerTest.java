@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 public class SparkWebServerTest {
 
     private final String PATH = "http://localhost:4567/checkStocks";
-    //private final String PATH = "*Heroku*";
     private final TimeInterval[] intervals = TimeInterval.values();
     private final StockSymbols[] symbols = StockSymbols.values();
     private final TimeFrame[] functions = TimeFrame.values();
@@ -50,7 +49,9 @@ public class SparkWebServerTest {
     }
 
     @Test
-    public void testingServerConcurrencyFeature() {
+    public void testingLocalServerConcurrencyFeature() {
+        System.out.println("------------- TESTING LOCAL SERVER -------------");
+        System.out.println("Threads: " + threadsQty + "\nRequests per Thread: " + requestsPerThread);
         for (int i = 0; i < threadsQty; i++) {
             threads.add(new MakeRequestThread(PATH, generateCaseForRequest(requestsPerThread)));
         }
@@ -62,8 +63,10 @@ public class SparkWebServerTest {
         Map<String, Boolean> requestsResults = MakeRequestThread.getResultsOfThreadRequests();
         Collection<Boolean> allRequestsStatus = requestsResults.values();
         allRequestsStatus.forEach(wasRequestsSuccessfully ->
-            wasAllRequestSuccessfully.set(wasAllRequestSuccessfully.get() && wasRequestsSuccessfully)
+                wasAllRequestSuccessfully.set(wasAllRequestSuccessfully.get() && wasRequestsSuccessfully)
         );
+
+        System.out.println("A total of " + (threadsQty * requestsPerThread) + " concurrent requests were made.\n");
 
         assertNotNull(requestsResults);
         assertEquals(threadsQty * requestsPerThread, requestsResults.size());
