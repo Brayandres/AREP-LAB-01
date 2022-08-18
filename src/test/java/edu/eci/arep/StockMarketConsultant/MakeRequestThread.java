@@ -47,7 +47,7 @@ public class MakeRequestThread implements Runnable {
                 wasProcessed = false;
                 e.printStackTrace();
             }
-            resultsOfThreadRequests.put(ownThread.getName() +": case="+i+", params="+paramsSet[0]+"-"+paramsSet[1]+"-"+paramsSet[2], wasProcessed);
+            resultsOfThreadRequests.put(ownThread.getName() +"/case="+i+"/params="+paramsSet[0]+"-"+paramsSet[1]+"-"+paramsSet[2], wasProcessed);
         }
     }
 

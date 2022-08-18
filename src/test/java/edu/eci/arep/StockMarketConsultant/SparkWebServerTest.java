@@ -3,14 +3,15 @@ package edu.eci.arep.StockMarketConsultant;
 import edu.eci.arep.StockMarketConsultant.externalServices.StockSymbols;
 import edu.eci.arep.StockMarketConsultant.externalServices.TimeFrame;
 import edu.eci.arep.StockMarketConsultant.externalServices.TimeInterval;
+import org.awaitility.Awaitility;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class SparkWebServerTest {
 
@@ -21,7 +22,7 @@ public class SparkWebServerTest {
     private final TimeFrame[] functions = TimeFrame.values();
     private final List<MakeRequestThread> threads = new ArrayList<>();
     private final int threadsQty = 10;
-    private final int requestsPerThread = 2;
+    private final int requestsPerThread = 5;
 
     private ArrayList<String[]> generateCaseForRequest(int requestsQty) {
         ArrayList<String[]> requestParams = new ArrayList<>();
@@ -39,36 +40,34 @@ public class SparkWebServerTest {
             System.out.println(" -- Starting thread: "+thread.getThread().getName());
             thread.getThread().start();
         }
-        /*for (MakeRequestThread thread: threads) {
+        for (MakeRequestThread thread: threads) {
             try {
                 thread.getThread().join();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }*/
-    }
-
-    @Test
-    public void testingTestClass() {
-        ArrayList<String[]> res = generateCaseForRequest(10);
-        for (String[] params: res) {
-            System.out.println("Case: "+Arrays.asList(params));
         }
-        assertEquals(1 + 1, 2);
     }
 
     @Test
     public void testingServerConcurrencyFeature() {
-        System.out.println("\n--------------------------------------------\n--------------------------------------------");
         for (int i = 0; i < threadsQty; i++) {
             threads.add(new MakeRequestThread(PATH, generateCaseForRequest(requestsPerThread)));
         }
         startThreads();
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("\nRESULTS: "+MakeRequestThread.getResultsOfThreadRequests());
+
+        Awaitility.await().until(() -> MakeRequestThread.getResultsOfThreadRequests().size() == threadsQty * requestsPerThread);
+
+        AtomicBoolean wasAllRequestSuccessfully = new AtomicBoolean(true);
+        Map<String, Boolean> requestsResults = MakeRequestThread.getResultsOfThreadRequests();
+        Collection<Boolean> allRequestsStatus = requestsResults.values();
+        allRequestsStatus.forEach(wasRequestsSuccessfully ->
+            wasAllRequestSuccessfully.set(wasAllRequestSuccessfully.get() && wasRequestsSuccessfully)
+        );
+
+        assertNotNull(requestsResults);
+        assertEquals(threadsQty * requestsPerThread, requestsResults.size());
+        assertEquals(threadsQty * requestsPerThread, allRequestsStatus.size());
+        assertTrue(wasAllRequestSuccessfully.get());
     }
 }
