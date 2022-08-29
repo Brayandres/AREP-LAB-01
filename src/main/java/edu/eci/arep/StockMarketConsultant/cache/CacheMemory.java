@@ -5,6 +5,7 @@ import edu.eci.arep.StockMarketConsultant.externalServices.TimeFrame;
 import edu.eci.arep.StockMarketConsultant.externalServices.TimeInterval;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class CacheMemory {
@@ -47,7 +48,7 @@ public final class CacheMemory {
         String[] requestParams = dataIdentifier.split("/");
         String stockName = requestParams[0];
         TimeFrame timeFrame = TimeFrame.valueOf(requestParams[1]);
-        TimeInterval timeInterval = TimeInterval.valueOf(requestParams[2]);
+        TimeInterval timeInterval = (!Objects.equals(requestParams[2], "null")) ? TimeInterval.valueOf(requestParams[2]) : null;
         String requestResponse = externalApi.getStockValuationHistory(stockName, timeFrame, timeInterval);
         memory.put(dataIdentifier, requestResponse);
     }

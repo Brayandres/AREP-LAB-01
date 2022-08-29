@@ -23,10 +23,9 @@ public class ApiConnectionAlphaVantage implements ApiConnection {
     @Override
     public String getStockValuationHistory(String stockName, TimeFrame timeFrame, TimeInterval timeInterval) throws IOException {
         var function = timeFrame.getValue();
-        var interval = timeInterval.getValue();
         var uri = (timeFrame != TimeFrame.INTRA_DAY) ?
                 "query?function=" + function + "&symbol=" + stockName + "&datatype=json" + "&apikey=" + API_KEY:
-                "query?function=" + function + "&symbol=" + stockName + "&interval=" + interval + "&datatype=json" + "&apikey=" + API_KEY;
+                "query?function=" + function + "&symbol=" + stockName + "&interval=" + timeInterval.getValue() + "&datatype=json" + "&apikey=" + API_KEY;
 
         // Creating request
         URL url = new URL(HOST + uri);
