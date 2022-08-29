@@ -5,6 +5,7 @@ import edu.eci.arep.StockMarketConsultant.externalServices.TimeFrame;
 import edu.eci.arep.StockMarketConsultant.externalServices.TimeInterval;
 
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,7 +13,7 @@ public final class CacheMemory {
 
     private static volatile CacheMemory instance;
     private static final Object mutex = new Object();
-    private final ConcurrentHashMap<String, String> memory;
+    private final ConcurrentHashMap<String, Hashtable<String, String>> memory;
 
     private CacheMemory() {
         memory = new ConcurrentHashMap<>();
@@ -36,7 +37,7 @@ public final class CacheMemory {
         if (!isDataStored(requestIdentifier)) {
             storeData(requestIdentifier, externalApi);
         }
-        response = retrieveData(requestIdentifier);
+        response = prepareResponse(requestIdentifier);
         return response;
     }
 
@@ -50,10 +51,27 @@ public final class CacheMemory {
         TimeFrame timeFrame = TimeFrame.valueOf(requestParams[1]);
         TimeInterval timeInterval = (!Objects.equals(requestParams[2], "null")) ? TimeInterval.valueOf(requestParams[2]) : null;
         String requestResponse = externalApi.getStockValuationHistory(stockName, timeFrame, timeInterval);
-        memory.put(dataIdentifier, requestResponse);
+        String requiredProperty = externalApi.getIterablePropertyNameFromResponseJSON(stockName, timeFrame, timeInterval);
+        Hashtable<String, String> fullResponse = new Hashtable<>();
+        fullResponse.put("response", requestResponse);
+        fullResponse.put("property", requiredProperty);
+        memory.put(dataIdentifier, fullResponse);
     }
 
-    private String retrieveData(String dataIdentifier) {
+    private Hashtable<String, String> retrieveData(String dataIdentifier) {
         return memory.get(dataIdentifier);
+    }
+
+    private String prepareResponse(String dataIdentifier) {
+        Hashtable<String, String> fullResponse = retrieveData(dataIdentifier);
+        return "" +
+                "[" +
+                    "{" +
+                        "\"property\": \"" + fullResponse.get("property") +
+                    "\"}," +
+                    "{" +
+                        "\"response\": " + fullResponse.get("response") +
+                    "}" +
+                "]";
     }
 }
