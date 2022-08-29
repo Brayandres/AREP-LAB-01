@@ -10,7 +10,12 @@ import java.net.MalformedURLException;
 public class ApiConnectionIexTrading implements ApiConnection {
     
     @Override
-    public String getStockValuationHistory(String stockName, TimeFrame timeFrame, TimeInterval timeInterval)  throws MalformedURLException, IOException {
+    public String getStockValuationHistory(String stockName, TimeFrame timeFrame, TimeInterval timeInterval)  throws IOException {
+        return null;
+    }
+
+    @Override
+    public String getIterablePropertyNameFromResponseJSON(String stockName, TimeFrame timeFrame, TimeInterval timeInterval) {
         return null;
     }
 }

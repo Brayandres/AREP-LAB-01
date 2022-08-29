@@ -5,5 +5,7 @@ import java.net.MalformedURLException;
 
 public interface ApiConnection {
 
-    String getStockValuationHistory(String stockName, TimeFrame timeFrame, TimeInterval timeInterval) throws MalformedURLException, IOException;
+    String getStockValuationHistory(String stockName, TimeFrame timeFrame, TimeInterval timeInterval) throws IOException;
+
+    String getIterablePropertyNameFromResponseJSON(String stockName, TimeFrame timeFrame, TimeInterval timeInterval);
 }

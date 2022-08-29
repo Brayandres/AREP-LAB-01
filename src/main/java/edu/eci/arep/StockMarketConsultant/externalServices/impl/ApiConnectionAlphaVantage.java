@@ -46,4 +46,33 @@ public class ApiConnectionAlphaVantage implements ApiConnection {
 
         return content.toString();
     }
+
+    @Override
+    public String getIterablePropertyNameFromResponseJSON(String stockName, TimeFrame timeFrame, TimeInterval timeInterval) {
+        // INTRA_DAY:
+        // - Time Series (1min)
+        // - Time Series (5min)
+        // - Time Series (15min)
+        // - Time Series (30min)
+        // - Time Series (60min)
+        // DAILY
+        // - Time Series (Daily)
+        // WEEKLY
+        // - Weekly Time Series
+        // MONTHLY
+        // - Monthly Time Series
+        var complement = "Time Series";
+        var property = "";
+        if (timeFrame == TimeFrame.INTRA_DAY) {
+            property = complement + " (" + timeInterval.getValue() + ")";
+        } else if (timeFrame == TimeFrame.DAILY) {
+            var tf = timeFrame.toString();
+            property = complement + " (" + tf.charAt(0)+tf.substring(1).toLowerCase() + ")";
+        }
+        else {
+            var tf = timeFrame.toString();
+            property = tf.charAt(0)+tf.substring(1).toLowerCase() + complement;
+        }
+        return property;
+    }
 }
