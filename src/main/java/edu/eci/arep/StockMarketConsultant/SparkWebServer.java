@@ -40,6 +40,8 @@ public class SparkWebServer {
 
     private static String getStockValuationHistory(Request request, Response response) {
         response.type("application/json");
+        response.header("Access-Control-Allow-Origin", "*");
+        response.header("Access-Control-Allow-Methods", "GET");
         try {
             String stockName = request.queryParams("symbol");
             TimeFrame timeFrame = TimeFrame.valueOf(request.queryParams("function"));
@@ -64,6 +66,7 @@ public class SparkWebServer {
 
     private static String getTimeframeValues(Request request, Response response) {
         response.type("application/json");
+        response.header("Access-Control-Allow-Origin", "*");
         ArrayList<String> values = new ArrayList<>();
         Arrays.asList(TimeFrame.values()).forEach((TimeFrame timeFrame) ->
                 values.add(timeFrame.toString())
@@ -75,6 +78,7 @@ public class SparkWebServer {
 
     private static String getTimeIntervalValues(Request request, Response response) {
         response.type("application/json");
+        response.header("Access-Control-Allow-Origin", "*");
         ArrayList<String> values = new ArrayList<>();
         Arrays.asList(TimeInterval.values()).forEach((TimeInterval timeInterval) ->
                 values.add(timeInterval.toString())
