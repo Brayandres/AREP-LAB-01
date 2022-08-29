@@ -48,18 +48,6 @@ public class ApiConnectionAlphaVantage implements ApiConnection {
 
     @Override
     public String getIterablePropertyNameFromResponseJSON(String stockName, TimeFrame timeFrame, TimeInterval timeInterval) {
-        // INTRA_DAY:
-        // - Time Series (1min)
-        // - Time Series (5min)
-        // - Time Series (15min)
-        // - Time Series (30min)
-        // - Time Series (60min)
-        // DAILY
-        // - Time Series (Daily)
-        // WEEKLY
-        // - Weekly Time Series
-        // MONTHLY
-        // - Monthly Time Series
         var complement = "Time Series";
         var property = "";
         if (timeFrame == TimeFrame.INTRA_DAY) {
@@ -70,7 +58,7 @@ public class ApiConnectionAlphaVantage implements ApiConnection {
         }
         else {
             var tf = timeFrame.toString();
-            property = tf.charAt(0)+tf.substring(1).toLowerCase() + complement;
+            property = tf.charAt(0)+tf.substring(1).toLowerCase() + " " + complement;
         }
         return property;
     }
