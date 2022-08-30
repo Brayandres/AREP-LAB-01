@@ -21,13 +21,12 @@ import static spark.Spark.*;
 
 public class SparkWebServer {
 
-    private static ApiConnection externalApiService;
-    private static final CacheMemory cacheService = CacheMemory.getInstance();
+    private static final int dataLifetimePolicyInMinutes = 8;
+    private static final CacheMemory cacheService = CacheMemory.getInstance(getApiConnection(), dataLifetimePolicyInMinutes);
 
     public static void main(String[] args) {
         staticFileLocation("/static");
         port(getPort());
-        createApiConnection();
         get("/checkStocks", SparkWebServer::getStockValuationHistory);
         get("/getTimeframes", SparkWebServer::getTimeframeValues);
         get("/getTimeIntervals", SparkWebServer::getTimeIntervalValues);
@@ -40,9 +39,9 @@ public class SparkWebServer {
         return 4567;
     }
 
-    private static void createApiConnection() {
+    private static ApiConnection getApiConnection() {
         ApiConnectionCreator creator = new AlphaVantageApiConnectionCreator();
-        externalApiService = creator.createApiConnection();
+        return creator.createApiConnection();
     }
 
     private static String getStockValuationHistory(Request request, Response response) {
@@ -53,7 +52,7 @@ public class SparkWebServer {
             String stockName = request.queryParams("symbol");
             TimeFrame timeFrame = TimeFrame.valueOf(request.queryParams("function"));
             TimeInterval timeInterval = (timeFrame == TimeFrame.INTRA_DAY) ? TimeInterval.valueOf(request.queryParams("interval")) : null;
-            String returnedData = cacheService.getRequestData(externalApiService, stockName + "/" + timeFrame + "/" + timeInterval);
+            String returnedData = cacheService.getRequestData(stockName + "/" + timeFrame + "/" + timeInterval);
             response.status(HttpStatus.OK_200);
             return returnedData;
         } catch (IOException e) {
