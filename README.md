@@ -58,9 +58,8 @@ git --version # version 2.31.1
 ### Instalación del proyecto
 Para descargar el proyecto de GitHub, primero debemos clonar este repositorio, ejecutando el siguiente comando en GIT.
 ```shell
-git clone https://github.com/Brayandres/AREP-LAB-01.git
+git clone https://github.com/Brayandres/AREP-LAB-01.git && cd AREP-LAB-01
 ```
-O si lo desea, puede descargarlo como archivo zip y luego descomprimirlo en su equipo.
 
 ### Compilación
 Para compilar el proyecto utilizando la herramienta Maven, nos dirigimos al directorio donde se encuentra alojado el proyecto, y dentro de este ejecutamos en una consola o Símbolo del Sistema el siguiente comando:
@@ -70,15 +69,15 @@ mvn clean install -DskipTests
 ```
 
 ## EJECUCIÓN DE PRUEBAS
-**Nota:** va a necesitar 2 ventanas de consola o símbolo del sistema que estén abiertas en el directorio principal del proyecto.
+**Nota:** va a necesitar 2 ventanas de consola o símbolo del sistema que estén abiertas en el directorio principal del proyecto.\
 Para ejecutar las pruebas se deben ejecutar los siguientes comandos de manera ordenada:
 
 (En la primera ventana)
 ```shell
 # Moverse a la rama de pruebas
-git branch -m "concurrency-testing-client"
+git checkout concurrency-testing-client
 
-# Actualizar la rama
+# Sincronizar la rama
 git fetch origin concurrency-testing-client
 git pull
 
@@ -105,14 +104,14 @@ Una vez hayan finalizado las pruebas, puede cerrar la segunda ventana y detener 
 
 ### Control de versiones 
 
-[Github](https://github.com/) para el versionamiento.
+* [Github](https://github.com/) para el versionamiento.
 
 ### Authors
 
-[Brayan Macías](https://github.com/brayandres) 
+* [Brayan Macías](https://github.com/brayandres) 
 
-_Fecha : 30 de agosto del 2022_ 
+	_Fecha : 30 de agosto del 2022_ 
 
 ### License
 
-This project is licensed under the GNU General Public License - see the [LICENSE](LICENSE)
+* This project is licensed under the GNU General Public License - see the [LICENSE](LICENSE)
