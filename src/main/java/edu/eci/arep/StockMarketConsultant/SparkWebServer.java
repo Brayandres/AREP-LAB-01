@@ -3,9 +3,10 @@ package edu.eci.arep.StockMarketConsultant;
 import com.google.gson.Gson;
 import edu.eci.arep.StockMarketConsultant.cache.CacheMemory;
 import edu.eci.arep.StockMarketConsultant.externalServices.ApiConnection;
+import edu.eci.arep.StockMarketConsultant.externalServices.ApiConnectionCreator;
 import edu.eci.arep.StockMarketConsultant.externalServices.TimeFrame;
 import edu.eci.arep.StockMarketConsultant.externalServices.TimeInterval;
-import edu.eci.arep.StockMarketConsultant.externalServices.impl.ApiConnectionAlphaVantage;
+import edu.eci.arep.StockMarketConsultant.externalServices.impl.creator.AlphaVantageApiConnectionCreator;
 import edu.eci.arep.StockMarketConsultant.response.StandardResponse;
 import edu.eci.arep.StockMarketConsultant.response.StatusResponse;
 import org.eclipse.jetty.http.HttpStatus;
@@ -20,12 +21,13 @@ import static spark.Spark.*;
 
 public class SparkWebServer {
 
-    private static final ApiConnection externalApiService = new ApiConnectionAlphaVantage();
+    private static ApiConnection externalApiService;
     private static final CacheMemory cacheService = CacheMemory.getInstance();
 
     public static void main(String[] args) {
         staticFileLocation("/static");
         port(getPort());
+        createApiConnection();
         get("/checkStocks", SparkWebServer::getStockValuationHistory);
         get("/getTimeframes", SparkWebServer::getTimeframeValues);
         get("/getTimeIntervals", SparkWebServer::getTimeIntervalValues);
@@ -36,6 +38,11 @@ public class SparkWebServer {
             return Integer.parseInt(System.getenv("PORT"));
         }
         return 4567;
+    }
+
+    private static void createApiConnection() {
+        ApiConnectionCreator creator = new AlphaVantageApiConnectionCreator();
+        externalApiService = creator.createApiConnection();
     }
 
     private static String getStockValuationHistory(Request request, Response response) {
