@@ -39,7 +39,7 @@ public class SparkWebServer {
         try {
             String stockName = request.queryParams("symbol");
             TimeFrame timeFrame = TimeFrame.valueOf(request.queryParams("function"));
-            TimeInterval timeInterval = TimeInterval.valueOf(request.queryParams("interval"));
+            TimeInterval timeInterval = (timeFrame == TimeFrame.INTRA_DAY) ? TimeInterval.valueOf(request.queryParams("interval")) : null;
             String returnedData = cacheService.getRequestData(externalApiService, stockName + "/" + timeFrame + "/" + timeInterval);
             response.status(HttpStatus.OK_200);
             return returnedData;
