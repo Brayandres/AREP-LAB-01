@@ -1,1 +1,1 @@
-# AREP-LAB-01
+# AREP LAB 01
