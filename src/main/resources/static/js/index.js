@@ -1,22 +1,30 @@
 var ApiClient = (function () {
 
-	const PATH = "/checkStocks";
+	const _CHECK_STOCKS_PATH = "/checkStocks";
+	const _TIMEFRAME_VALUES_PATH = "/getTimeframes";
+	const _TIMEINTERVAL_VALUES_PATH = "/getTimeIntervals";
 
-	async function _retrievingData(parameters) {
-		let response = await fetch(PATH + parameters);
+	async function _retrievingData(path, parameters) {
+		let response = await fetch(_PATH + parameters);
 		let data = await response.json();
-		console.log("Response: "+JSON.stringify(data));
+		return data;
 	}
 
-	const PARAMS = "?function=INTRA_DAY" + "&symbol=IBM" + "&interval=FIFTEEN_MIN";
+
+	function _fillTimeframeSelect() {
+		values = JSON.stringify(_retrievingData(_TIMEFRAME_VALUES_PATH, ""));
+		console.log(values);
+	}
+
+
+	function _fillTimeIntervalSelect() {
+		values = JSON.stringify(_retrievingData(_TIMEINTERVAL_VALUES_PATH, ""));
+		console.log(values);
+	}
 
 	function init() {
-		console.log("------- IN INIT()");
-		//const requestBody = prepareData();
-		const parameters = PARAMS;
-		console.log("Parameters: "+parameters);
-		_retrievingData(parameters);
-		console.log("------- END INIT()");
+		_fillTimeframeSelect();
+		_fillTimeIntervalSelect();
 	}
 
 	return {
