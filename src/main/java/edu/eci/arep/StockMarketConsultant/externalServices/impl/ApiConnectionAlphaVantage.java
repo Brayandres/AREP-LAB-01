@@ -23,10 +23,9 @@ public class ApiConnectionAlphaVantage implements ApiConnection {
     @Override
     public String getStockValuationHistory(String stockName, TimeFrame timeFrame, TimeInterval timeInterval) throws IOException {
         var function = timeFrame.getValue();
-        var interval = timeInterval.getValue();
         var uri = (timeFrame != TimeFrame.INTRA_DAY) ?
                 "query?function=" + function + "&symbol=" + stockName + "&datatype=json" + "&apikey=" + API_KEY:
-                "query?function=" + function + "&symbol=" + stockName + "&interval=" + interval + "&datatype=json" + "&apikey=" + API_KEY;
+                "query?function=" + function + "&symbol=" + stockName + "&interval=" + timeInterval.getValue() + "&datatype=json" + "&apikey=" + API_KEY;
 
         // Creating request
         URL url = new URL(HOST + uri);
@@ -45,5 +44,22 @@ public class ApiConnectionAlphaVantage implements ApiConnection {
         connection.disconnect();
 
         return content.toString();
+    }
+
+    @Override
+    public String getIterablePropertyNameFromResponseJSON(String stockName, TimeFrame timeFrame, TimeInterval timeInterval) {
+        var complement = "Time Series";
+        var property = "";
+        if (timeFrame == TimeFrame.INTRA_DAY) {
+            property = complement + " (" + timeInterval.getValue() + ")";
+        } else if (timeFrame == TimeFrame.DAILY) {
+            var tf = timeFrame.toString();
+            property = complement + " (" + tf.charAt(0)+tf.substring(1).toLowerCase() + ")";
+        }
+        else {
+            var tf = timeFrame.toString();
+            property = tf.charAt(0)+tf.substring(1).toLowerCase() + " " + complement;
+        }
+        return property;
     }
 }
